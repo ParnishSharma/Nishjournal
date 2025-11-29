@@ -7,6 +7,7 @@ import com.nishjournal.Nishjournal.entry.User;
 import com.nishjournal.Nishjournal.repository.UserRepository;
 import com.nishjournal.Nishjournal.service.JournalEntryService;
 import com.nishjournal.Nishjournal.service.UserService;
+import com.nishjournal.Nishjournal.service.WeatherService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,16 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
-@Autowired
+
+    @Autowired
 private UserService userService;
 
 @Autowired
 private UserRepository userRepository;
 
-@GetMapping
+    @Autowired
+    private WeatherService weatherService;
+
 public List<User> getall() {
     return userService.getAll();
 }
@@ -53,6 +57,11 @@ public List<User> getall() {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 }
 
+@GetMapping
+    public ResponseEntity<?> greetUser(){
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return new ResponseEntity<>("hey "+authentication.getName()+" weather feels like "+weatherService.getWeather().getCurrent().feelslike_c,HttpStatus.OK);
+}
 }
 
 
